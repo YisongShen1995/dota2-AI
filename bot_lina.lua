@@ -119,10 +119,19 @@ end
 
 -----State function-----
 local function StateIdle(StateMachine)
+
+
+
+
+	-- StateMachine.State = STATE_RETREAT --- @@@ DEBUG
+	-- return;
+
+
     local npcBot = GetBot();
     if(npcBot:IsAlive() == false) then
         return;
     end
+
 
     if ( npcBot:IsUsingAbility() or npcBot:IsChanneling()) then return end;
 
@@ -169,6 +178,7 @@ local function StateIdle(StateMachine)
 end
 
 local function StateFighting(StateMachine)
+	
 
     local npcBot = GetBot();
     if(npcBot:IsAlive() == false) then
@@ -213,6 +223,7 @@ local function StateFighting(StateMachine)
 end
 
 local function StateAttackingCreep(StateMachine)
+
     local npcBot = GetBot();
     if(npcBot:IsAlive() == false) then
         StateMachine.State = STATE_IDLE;
@@ -250,6 +261,8 @@ end
 
 
 local function StateGotoPoint(StateMachine)
+	
+
     local npcBot = GetBot();
     if(npcBot:IsAlive() == false) then
         StateMachine.State = STATE_IDLE;
@@ -287,6 +300,8 @@ local function StateGotoPoint(StateMachine)
 end
 
 local function StateRunAway(StateMachine)
+
+
     local npcBot = GetBot();
 
     if(npcBot:IsAlive() == false) then
@@ -322,7 +337,23 @@ local function StateRunAway(StateMachine)
 
 end
 
+
+local function GetItem(itemName)
+	local npcBot  = GetBot()
+    for i = 0, 5 do
+        local item = npcBot:GetItemInSlot(i)
+		if (item) and item:GetName() == itemName then
+			return item
+		end
+    end
+    return nil
+end
+
+
 local function StateRetreat(StateMachine)
+
+	print("@@@@@@@@@@@@@@@ enter stateRetreat")
+    
     local npcBot = GetBot();
     if(npcBot:IsAlive() == false) then
         StateMachine.State = STATE_IDLE;
@@ -331,12 +362,22 @@ local function StateRetreat(StateMachine)
 
     if ( npcBot:IsUsingAbility() or npcBot:IsChanneling()) then return end;
 
-    
-    if ( GetTeam() == TEAM_RADIANT ) then
-        npcBot:Action_MoveToLocation(Vector(-7000,-7000));
-    elseif ( GetTeam() == TEAM_DIRE ) then
-        npcBot:Action_MoveToLocation(Vector(7200,6500));
-    end
+  
+   	if npcBot:GetHealth()/npcBot:GetMaxHealth() < LinaRetreatHPThreshold then
+   		local item = GetItem("item_flask")
+   		npcBot:Action_UseAbilityOnEntity(item, npcBot)
+   		return;
+   	elseif npcBot:GetMana()/npcBot:GetMaxMana() < LinaRetreatMPThreshold then
+   		local item = GetItem("item_enchanted_mango")
+   		npcBot:Action_UseAbility(item)
+   		return;
+   	end
+
+    -- if ( GetTeam() == TEAM_RADIANT ) then
+    --     npcBot:Action_MoveToLocation(Vector(-7000,-7000));
+    -- elseif ( GetTeam() == TEAM_DIRE ) then
+    --     npcBot:Action_MoveToLocation(Vector(7200,6500));
+    -- end
 
     if(npcBot:GetHealth() == npcBot:GetMaxHealth() and npcBot:GetMana() == npcBot:GetMaxMana()) then
         StateMachine.State = STATE_IDLE;
