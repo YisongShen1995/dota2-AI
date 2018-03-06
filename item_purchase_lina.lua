@@ -1,12 +1,11 @@
 local tableItemsToBuy = {   
-        "item_flask",
-        "item_flask",
+    "item_flask",
 	"item_enchanted_mango",
-	"item_tango",
+    "item_magic_stick",
+	"item_circlet",
 	"item_branches",
-        "item_branches",
-        "item_branches",
-        "item_branches"
+	"item_branches",
+	"item_boots"
     };  
   
   

@@ -5,7 +5,7 @@ function Think()
 	hasLina = false
  	for i,id in pairs(GetTeamPlayers(GetTeam())) do
         if (IsPlayerBot(id)) and (GetSelectedHeroName(id)=="" or GetSelectedHeroName(id)==nil) then
-        	if (GetTeam() == TEAM_RADIANT and hasLina == false) then
+        	if (GetTeam() == TEAM_DIRE and hasLina == false) then
             	SelectHero( id, "npc_dota_hero_lina" )
             	hasLina = true
             else 
