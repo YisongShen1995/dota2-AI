@@ -8,12 +8,12 @@ local STATE_FIGHTING = "STATE_FIGHTING";
 local STATE_GOTO_POINT = "STATE_GOTO_POINT";
 local STATE_RUN_AWAY = "STATE_RUN_AWAY";
 local STATE_RETREAT = "STATE_RETREAT";
-
+local STATE_RETREAT_SUB="STATE_RETREAT_SUB";
 local STATE = STATE_IDLE;
 
-local LinaRetreatHPThreshold = 0.25;
+local LinaRetreatHPThreshold = 0.5;
 local LinaRetreatMPThreshold = 0.2;
-
+local LinaRetreatHPThreshold2 = 0.25;
 LANE = LANE_MID
 ------------------------
 local function ConsiderFighting(StateMachine)
@@ -117,6 +117,11 @@ local function ConsiderRetreat()
     return npcBot:GetHealth()/npcBot:GetMaxHealth() < LinaRetreatHPThreshold or npcBot:GetMana()/npcBot:GetMaxMana() < LinaRetreatMPThreshold;
 end
 
+local function ConsiderRetreatHP()
+    local npcBot = GetBot();
+    return npcBot:GetHealth()/npcBot:GetMaxHealth() < LinaRetreatHPThreshold2;
+end
+
 -----State function-----
 local function StateIdle(StateMachine)
 
@@ -166,7 +171,7 @@ local function StateIdle(StateMachine)
     end
 
 
-    if(DotaTime() < 20) then
+    if(DotaTime() < 15) then
         local tower = LinaUtility:GetFrontTowerAt(LANE);
         npcBot:Action_MoveToLocation(tower:GetLocation());
         return;
@@ -186,10 +191,10 @@ local function StateFighting(StateMachine)
         return;
     end
 
-    if( ConsiderRetreat()) then
-        StateMachine.State = STATE_RETREAT;
+    if( ConsiderRetreatHP()) then
+      StateMachine.State = STATE_RETREAT;
         return;
-    elseif(IsTowerAttackingMe()) then
+	elseif(IsTowerAttackingMe()) then
         StateMachine.State = STATE_RUN_AWAY;
         return;
     elseif(StateMachine["EnemyToKill"]:IsNull()) then
@@ -235,7 +240,7 @@ local function StateAttackingCreep(StateMachine)
     
     if ( npcBot:IsUsingAbility() or npcBot:IsChanneling()) then return end;
 
-    if( ConsiderRetreat()) then
+    if( ConsiderRetreatHP()) then
         StateMachine.State = STATE_RETREAT;
         return;
     elseif(IsTowerAttackingMe()) then
@@ -274,7 +279,7 @@ local function StateGotoPoint(StateMachine)
 
     if ( npcBot:IsUsingAbility() or npcBot:IsChanneling()) then return end;
 
-    if( ConsiderRetreat()) then
+    if( ConsiderRetreatHP()) then
         StateMachine.State = STATE_RETREAT;
         return;
     elseif(IsTowerAttackingMe()) then
@@ -312,7 +317,7 @@ local function StateRunAway(StateMachine)
 
     if ( npcBot:IsUsingAbility() or npcBot:IsChanneling()) then return end;
 
-    if( ConsiderRetreat()) then
+    if( ConsiderRetreatHP()) then
         StateMachine.State = STATE_RETREAT;
         StateMachine["RunAwayFromLocation"] = nil;
         return;
@@ -364,13 +369,36 @@ local function StateRetreat(StateMachine)
 
   
    	if npcBot:GetHealth()/npcBot:GetMaxHealth() < LinaRetreatHPThreshold then
-   		local item = GetItem("item_flask")
-   		npcBot:Action_UseAbilityOnEntity(item, npcBot)
-   		return;
+		--local tower = LinaUtility:GetFrontTowerAt(LANE);
+		--if npcBot:GetLocation()~=tower:GetLocation() then
+		--	npcBot:Action_MoveToLocation(tower:GetLocation());
+		--	StateMachine.State = STATE_IDLE;
+		--	return;
+		--else
+		local item = GetItem("item_flask")
+		if (item) then
+			npcBot:Action_UseAbilityOnEntity(item, npcBot)
+			StateMachine.State = STATE_RUN_AWAY;
+			return;
+		else
+			if npcBot:GetHealth()/npcBot:GetMaxHealth() < LinaRetreatHPThreshold2 then
+				StateMachine.State= STATE_RETREAT_SUB;
+				
+			else
+				StateMachine.State =STATE_ATTACKING_CREEP;
+				return;
+			end
+		end		
    	elseif npcBot:GetMana()/npcBot:GetMaxMana() < LinaRetreatMPThreshold then
    		local item = GetItem("item_enchanted_mango")
-   		npcBot:Action_UseAbility(item)
-   		return;
+		if (item) then
+			npcBot:Action_UseAbility(item)
+			StateMachine.State = STATE_IDLE;
+			return;
+		else
+			StateMachine.State = STATE_ATTACKING_CREEP;
+			return;
+		end
    	end
 
     -- if ( GetTeam() == TEAM_RADIANT ) then
@@ -378,14 +406,27 @@ local function StateRetreat(StateMachine)
     -- elseif ( GetTeam() == TEAM_DIRE ) then
     --     npcBot:Action_MoveToLocation(Vector(7200,6500));
     -- end
-
-    if(npcBot:GetHealth() == npcBot:GetMaxHealth() and npcBot:GetMana() == npcBot:GetMaxMana()) then
+	
+end
+local function StateRetreatSub(StateMachine)
+	local npcBot = GetBot();
+    if(npcBot:IsAlive() == false) then
         StateMachine.State = STATE_IDLE;
         return;
     end
+
+    if ( npcBot:IsUsingAbility() or npcBot:IsChanneling()) then return end;
+	if ( GetTeam() == TEAM_RADIANT ) then
+		npcBot:Action_MoveToLocation(Vector(-7000,-7000));
+	elseif ( GetTeam() == TEAM_DIRE ) then
+		npcBot:Action_MoveToLocation(Vector(7200,6500));
+	end
+	if(npcBot:GetHealth() == npcBot:GetMaxHealth() and npcBot:GetMana() == npcBot:GetMaxMana()) then
+		StateMachine.State = STATE_IDLE;
+		return;
+	end
+    
 end
-
-
 ------------------------
 local StateMachine = {};
 StateMachine["State"] = STATE_IDLE;
@@ -395,6 +436,7 @@ StateMachine[STATE_GOTO_POINT] = StateGotoPoint;
 StateMachine[STATE_FIGHTING] = StateFighting;
 StateMachine[STATE_RUN_AWAY] = StateRunAway;
 StateMachine[STATE_RETREAT] = StateRetreat;
+StateMachine[STATE_RETREAT_SUB] = StateRetreatSub;
 StateMachine["totalLevelOfAbilities"] = 0;
 
 function Think()
