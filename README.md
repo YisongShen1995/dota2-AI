@@ -2,7 +2,7 @@
 
 This project is still under development.
 
-We have developed a state machine for Lina to idle/run away/retreat/attack creep/fight/go to point. Lina can also buy items, learn skills automatically. The logic for the state machine for now is as follows:
+We have developed a state machine for Lina to buy items, learn skills, use items and skills, farm, control her position, attack, retreat and run away. The logic for the state machine for now is as follows:
 
 ## Idle State
  - The basic state for our AI.
