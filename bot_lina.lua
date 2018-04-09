@@ -132,6 +132,9 @@ local function StateIdle(StateMachine)
 	-- return;
 
 
+	
+
+
     local npcBot = GetBot();
     if(npcBot:IsAlive() == false) then
         return;
@@ -234,6 +237,19 @@ local function StateAttackingCreep(StateMachine)
         StateMachine.State = STATE_IDLE;
         return;
     end
+
+    print("StateAttackingCreep")
+	local courier = GetCourier(0)
+    if (GetCourierState(courier) == COURIER_STATE_AT_BASE) then
+    	print("zhao dao le ji")
+    end
+
+   
+    if courier:ActionImmediate_PurchaseItem( "item_flask" ) == PURCHASE_ITEM_SUCCESS then
+		print("courier buy item flask")
+		npcBot:ActionImmediate_Courier( courier, COURIER_ACTION_TRANSFER_ITEMS )
+	end
+
 
     local creeps = npcBot:GetNearbyCreeps(1000,true);
     local comfortPoint = LinaUtility:GetComfortPoint(creeps, LANE);

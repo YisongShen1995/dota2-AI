@@ -1,11 +1,11 @@
 local tableItemsToBuy = {   
-    "item_flask",
-	"item_enchanted_mango",
-    "item_magic_stick",
-	"item_circlet",
-	"item_branches",
-	"item_branches",
-	"item_boots"
+ --    "item_flask",
+	-- "item_enchanted_mango",
+ --    "item_magic_stick",
+	-- "item_circlet",
+	-- "item_branches",
+	-- "item_branches",
+	-- "item_boots"
     };  
   
   
@@ -18,6 +18,9 @@ function ItemPurchaseThink()
   
     local npcBot = GetBot();  
   
+  
+
+
     if ( #tableItemsToBuy == 0 )  
     then  
         npcBot:SetNextItemPurchaseValue( 0 );  
