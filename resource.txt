@@ -1,0 +1,11 @@
+hero selection and skill usage https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial-1.html
+
+equipment selection and purchase https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial-2.html
+
+dota2 api http://docs.moddota.com/lua_bots/
+
+official page dota bot scripting https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting:zh-cn#.E5.8D.95.E4.BD.8D.E4.BD.9C.E7.94.A8.E5.9F.9F
+
+how to use item https://dev.dota2.com/archive/index.php/t-275139.html
+
+Several bot examples https://github.com/furiouspuppy/Dota2_Bots

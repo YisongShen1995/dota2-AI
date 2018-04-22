@@ -14,10 +14,22 @@ local tableItemsToBuy = {
 local secretShopThreshold = 100000;  
 local distanceBuyShop = 500;  
   
+-- local function BotSpeak(message)l
+--     local npcBot = GetBot();
+--     npcBot:ActionImmediate_Chat(message,true);
+--     return nil;
+-- end
+
+
 function ItemPurchaseThink()  
   
     local npcBot = GetBot();  
   
+  
+    -- npcBot:ActionImmediate_Chat("ItemPurchaseThink", true)
+    local courier = GetCourier(0)
+   
+
     if ( #tableItemsToBuy == 0 )  
     then  
         npcBot:SetNextItemPurchaseValue( 0 );  
@@ -30,10 +42,11 @@ function ItemPurchaseThink()
   
     if ( npcBot:GetGold() >= GetItemCost( sNextItem ) )  
     then  
+
         if ( IsItemPurchasedFromSecretShop(sNextItem) and   
             npcBot:DistanceFromSecretShop() <= secretShopThreshold )  
         then  
-            --print("Money is enough,Will Move to secret shop for: ",sNextItem);  
+            print("Money is enough,Will Move to secret shop for: ",sNextItem);  
             npcBot.secretShopMode = true;  
   
             local shop_top = Vector(-4600, 1200);  
@@ -57,11 +70,27 @@ function ItemPurchaseThink()
                 npcBot.secretShopMode = false;  
             end  
         else  
-            print("Money is enough,Will buy: ",sNextItem," cost is:",  
-                tostring(GetItemCost(sNextItem)));  
-            npcBot:ActionImmediate_PurchaseItem( sNextItem );  
-            table.remove( tableItemsToBuy, 1 );  
+
+            npcBot:ActionImmediate_Chat("Money is enough,Will buy: "..sNextItem.." cost is:"..
+                tostring(GetItemCost(sNextItem)), true);  
+
+            if (GetCourierState(courier) == COURIER_STATE_AT_BASE) then
+                npcBot:ActionImmediate_Chat("zhao dao le ji", true)
+
+                if courier:ActionImmediate_PurchaseItem( sNextItem ) == PURCHASE_ITEM_SUCCESS then
+                    npcBot:ActionImmediate_Chat("courier buy "..sNextItem, true)
+                    
+                end
+
+                npcBot:ActionImmediate_PurchaseItem( sNextItem );  
+                table.remove( tableItemsToBuy, 1 );  
+             end
         end  
+    else
+        if (courier:GetItemInSlot(0) ~= nil and GetCourierState(courier) == COURIER_STATE_AT_BASE) then
+            npcBot:ActionImmediate_Courier( courier, COURIER_ACTION_TRANSFER_ITEMS )
+        end
     end  
   
 end  
+
