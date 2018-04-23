@@ -13,10 +13,10 @@ local TALENT7 = "special_bonus_unique_lina_1"
 local TALENT8 = "special_bonus_unique_lina_2"
 
 local LinaAbilityPriority = {
-    SKILL_Q,    SKILL_E,    SKILL_Q,     SKILL_W,    SKILL_Q,
-    SKILL_R,    SKILL_Q,    SKILL_E,     SKILL_E,    TALENT1,
-    SKILL_E,    SKILL_R,    SKILL_W,     SKILL_W,    TALENT3,
-    SKILL_W,    SKILL_R,    TALENT5,     TALENT7
+    SKILL_Q,    SKILL_W,    SKILL_Q,     SKILL_W,    SKILL_Q,
+    SKILL_R,    SKILL_Q,    SKILL_W,     SKILL_E,    TALENT1,
+    SKILL_W,    SKILL_R,    SKILL_E,     SKILL_E,    TALENT3,
+    SKILL_E,    SKILL_R,    TALENT5,     TALENT7
 }
 
 function AbilityLevelUpThink()

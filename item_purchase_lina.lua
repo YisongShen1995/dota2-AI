@@ -4,8 +4,18 @@ local tableItemsToBuy = {
     "item_magic_stick",
 	"item_circlet",
 	"item_branches",
+    "item_flask",
 	"item_branches",
-	"item_boots"
+	"item_boots",
+    "item_flask",
+    "item_staff_of_wizardry",
+    "item_flask",
+    "item_ring_of_regen",
+    "item_flask",
+    "item_recipe_force_staff",
+    "item_point_booster",
+    "item_staff_of_wizardry",
+    "item_ogre_axe",
     };  
   
   
@@ -75,15 +85,16 @@ function ItemPurchaseThink()
                 tostring(GetItemCost(sNextItem)), true);  
 
             if (GetCourierState(courier) == COURIER_STATE_AT_BASE) then
-                npcBot:ActionImmediate_Chat("zhao dao le ji", true)
+                npcBot:ActionImmediate_Chat("Courier found", true)
 
                 if courier:ActionImmediate_PurchaseItem( sNextItem ) == PURCHASE_ITEM_SUCCESS then
-                    npcBot:ActionImmediate_Chat("courier buy "..sNextItem, true)
+                    npcBot:ActionImmediate_Chat("Courier buy "..sNextItem, true)
+                    table.remove( tableItemsToBuy, 1 );  
                     
                 end
 
-                npcBot:ActionImmediate_PurchaseItem( sNextItem );  
-                table.remove( tableItemsToBuy, 1 );  
+                -- npcBot:ActionImmediate_PurchaseItem( sNextItem );  
+                
              end
         end  
     else
