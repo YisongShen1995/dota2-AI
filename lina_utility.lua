@@ -127,7 +127,7 @@ function M:GetComfortPoint(creeps,LANE)
     local avg_pos_y = y_pos_sum / count;
 
     if(count > 0) then      
-        return self:GetNearByPrecursorPointOnLane(LANE,Vector(avg_pos_x,avg_pos_y)) + RandomVector(20);
+        return self:GetNearByPrecursorPointOnLane(LANE,Vector(avg_pos_x,avg_pos_y)) + RandomVector(10);
     else
         return nil;
     end;
