@@ -1,4 +1,4 @@
-# Update:
+## Update:
 
 We've got a website updating what we have done: https://csci524dota2ai.wordpress.com/
 
