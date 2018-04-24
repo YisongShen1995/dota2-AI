@@ -1,6 +1,8 @@
-Update:
+# Update:
 
 We've got a website updating what we have done: https://csci524dota2ai.wordpress.com/
+
+There is also a live demo on the website.
 
 We've developed a decision tree version of our AI.
 
