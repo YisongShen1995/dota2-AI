@@ -1,3 +1,8 @@
+Update:
+We've got a website updating what we have done: https://csci524dota2ai.wordpress.com/
+We've developed a decision tree version of our AI.
+
+----
 # A dota2-AI for Lina Solo Mid
 
 This project is still under development.
